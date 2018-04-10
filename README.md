@@ -1,1 +1,3 @@
-# filemanager-connector-php
+# NodeJS V1 connector
+
+Documentation is coming soon.
