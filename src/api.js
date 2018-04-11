@@ -29,14 +29,30 @@ async function getCapabilitiesForResource(options, resource) {
 async function getResourceById(options, id) {
   const route = `${options.apiRoot}/files/${id}`;
   const method = 'GET';
-  const response = await request(method, route);
+  let header = { 'Content-Type': 'application/json' };
+  if (options.apiToken !== undefined) {
+    header['Authorization'] = options.apiToken;
+  }
+  let response = await request(method, route).
+    set(header).
+    catch((error) => {
+      console.error(`Filemanager. getResourceById(${id})`, error);
+    });
   return normalizeResource(response.body);
 }
 
 async function getChildrenForId(options, { id, sortBy = 'name', sortDirection = 'ASC' }) {
   const route = `${options.apiRoot}/files/${id}/children?orderBy=${sortBy}&orderDirection=${sortDirection}`;
   const method = 'GET';
-  const response = await request(method, route);
+  let header = { 'Content-Type': 'application/json' };
+  if (options.apiToken !== undefined) {
+    header['Authorization'] = options.apiToken;
+  }
+  let response = await request(method, route).
+    set(header).
+    catch((error) => {
+      console.error(`Filemanager. getChildrenForId(${id})`, error);
+    });
   return response.body.items.map(normalizeResource)
 }
 
@@ -63,7 +79,15 @@ async function getParentsForId(options, id, result = []) {
 
 async function getBaseResource(options) {
   const route = `${options.apiRoot}/files`;
-  const response = await request.get(route);
+  let header = { 'Content-Type': 'application/json' };
+  if (options.apiToken !== undefined) {
+    header['Authorization'] = options.apiToken;
+  }
+  let response = await request.get(route).
+    set(header).
+    catch((error) => {
+      console.error(`Filemanager. getBaseResource()`, error);
+    });
   return normalizeResource(response.body);
 }
 
@@ -104,7 +128,12 @@ async function getParentIdForResource(options, resource) {
 
 async function uploadFileToId({ apiOptions, parentId, file, onProgress }) {
   let route = `${apiOptions.apiRoot}/files`;
+  let header = { 'Content-Type': 'application/json' };
+  if (apiOptions.apiToken !== undefined) {
+    header['Authorization'] = apiOptions.apiToken;
+  }
   return request.post(route).
+    set(header).
     field('type', 'file').
     field('parentId', parentId).
     attach('files', file.file, file.name).
@@ -119,7 +148,12 @@ async function downloadResources({ apiOptions, resources, onProgress }) {
     `${apiOptions.apiRoot}/download?`
   );
 
+  let header = { 'Content-Type': 'application/json' };
+  if (apiOptions.apiToken !== undefined) {
+    header['Authorization'] = apiOptions.apiToken;
+  }
   let res = await request.get(downloadUrl).
+    set(header).
     responseType('blob').
     on('progress', event => {
       onProgress(event.percent);
@@ -136,7 +170,11 @@ async function createFolder(options, parentId, folderName) {
     name: folderName,
     type: 'dir'
   };
-  return request(method, route).send(params)
+  let header = { 'Content-Type': 'application/json' };
+  if (options.apiToken !== undefined) {
+    header['Authorization'] = options.apiToken;
+  }
+  return request(method, route).set(header).send(params)
 }
 
 function getResourceName(apiOptions, resource) {
@@ -146,13 +184,21 @@ function getResourceName(apiOptions, resource) {
 async function renameResource(options, id, newName) {
   const route = `${options.apiRoot}/files/${id}`;
   const method = 'PATCH';
-  return request(method, route).type('application/json').send({ name: newName })
+  let header = { 'Content-Type': 'application/json' };
+  if (options.apiToken !== undefined) {
+    header['Authorization'] = options.apiToken;
+  }
+  return request(method, route).type('application/json').set(header).send({ name: newName })
 }
 
 async function removeResource(options, resource) {
   const route = `${options.apiRoot}/files/${resource.id}`;
   const method = 'DELETE';
-  return request(method, route)
+  let header = { 'Content-Type': 'application/json' };
+  if (options.apiToken !== undefined) {
+    header['Authorization'] = options.apiToken;
+  }
+  return request(method, route).set(header)
 }
 
 async function removeResources(options, selectedResources) {
