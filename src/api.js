@@ -30,10 +30,11 @@ async function getResourceById(options, id) {
   const route = `${options.apiRoot}/files/${id}`;
   const method = 'GET';
   let header = { 'Content-Type': 'application/json' };
-  if (options.apiToken !== undefined) {
-    header['Authorization'] = options.apiToken;
+  if (options.CSRF !== undefined) {
+    header['X-CSRF-TOKEN'] = options.CSRF;
   }
   let response = await request(method, route).
+    withCredentials().
     set(header).
     catch((error) => {
       console.error(`Filemanager. getResourceById(${id})`, error);
@@ -45,10 +46,11 @@ async function getChildrenForId(options, { id, sortBy = 'name', sortDirection = 
   const route = `${options.apiRoot}/files/${id}/children?orderBy=${sortBy}&orderDirection=${sortDirection}`;
   const method = 'GET';
   let header = { 'Content-Type': 'application/json' };
-  if (options.apiToken !== undefined) {
-    header['Authorization'] = options.apiToken;
+  if (options.CSRF !== undefined) {
+    header['X-CSRF-TOKEN'] = options.CSRF;
   }
   let response = await request(method, route).
+    withCredentials().
     set(header).
     catch((error) => {
       console.error(`Filemanager. getChildrenForId(${id})`, error);
@@ -80,10 +82,11 @@ async function getParentsForId(options, id, result = []) {
 async function getBaseResource(options) {
   const route = `${options.apiRoot}/files`;
   let header = { 'Content-Type': 'application/json' };
-  if (options.apiToken !== undefined) {
-    header['Authorization'] = options.apiToken;
+  if (options.CSRF !== undefined) {
+    header['X-CSRF-TOKEN'] = options.CSRF;
   }
   let response = await request.get(route).
+    withCredentials().
     set(header).
     catch((error) => {
       console.error(`Filemanager. getBaseResource()`, error);
@@ -129,10 +132,11 @@ async function getParentIdForResource(options, resource) {
 async function uploadFileToId({ apiOptions, parentId, file, onProgress }) {
   let route = `${apiOptions.apiRoot}/files`;
   let header = { 'Content-Type': 'application/json' };
-  if (apiOptions.apiToken !== undefined) {
-    header['Authorization'] = apiOptions.apiToken;
+  if (apiOptions.CSRF !== undefined) {
+    header['X-CSRF-TOKEN'] = apiOptions.CSRF;
   }
   return request.post(route).
+    withCredentials().
     set(header).
     field('type', 'file').
     field('parentId', parentId).
@@ -149,10 +153,11 @@ async function downloadResources({ apiOptions, resources, onProgress }) {
   );
 
   let header = { 'Content-Type': 'application/json' };
-  if (apiOptions.apiToken !== undefined) {
-    header['Authorization'] = apiOptions.apiToken;
+  if (apiOptions.CSRF !== undefined) {
+    header['X-CSRF-TOKEN'] = apiOptions.CSRF;
   }
   let res = await request.get(downloadUrl).
+    withCredentials().
     set(header).
     responseType('blob').
     on('progress', event => {
@@ -171,10 +176,10 @@ async function createFolder(options, parentId, folderName) {
     type: 'dir'
   };
   let header = { 'Content-Type': 'application/json' };
-  if (options.apiToken !== undefined) {
-    header['Authorization'] = options.apiToken;
+  if (options.CSRF !== undefined) {
+    header['X-CSRF-TOKEN'] = options.CSRF;
   }
-  return request(method, route).set(header).send(params)
+  return request(method, route).withCredentials().set(header).send(params)
 }
 
 function getResourceName(apiOptions, resource) {
@@ -185,20 +190,20 @@ async function renameResource(options, id, newName) {
   const route = `${options.apiRoot}/files/${id}`;
   const method = 'PATCH';
   let header = { 'Content-Type': 'application/json' };
-  if (options.apiToken !== undefined) {
-    header['Authorization'] = options.apiToken;
+  if (options.CSRF !== undefined) {
+    header['X-CSRF-TOKEN'] = options.CSRF;
   }
-  return request(method, route).type('application/json').set(header).send({ name: newName })
+  return request(method, route).withCredentials().type('application/json').set(header).send({ name: newName })
 }
 
 async function removeResource(options, resource) {
   const route = `${options.apiRoot}/files/${resource.id}`;
   const method = 'DELETE';
   let header = { 'Content-Type': 'application/json' };
-  if (options.apiToken !== undefined) {
-    header['Authorization'] = options.apiToken;
+  if (options.CSRF !== undefined) {
+    header['X-CSRF-TOKEN'] = options.CSRF;
   }
-  return request(method, route).set(header)
+  return request(method, route).withCredentials().set(header)
 }
 
 async function removeResources(options, selectedResources) {
