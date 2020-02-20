@@ -37,6 +37,9 @@
     "babel-preset-es2017": "6.24.1",
     "babel-preset-stage-0": "6.24.1",
     "eslint": "4.18.2",
+    "lodash": ">=4.17.12",
+    "braces": ">=2.3.1",
+    "randomatic": ">=3.0.0",
     "eslint-config-opuscapita": "2.0.0",
     "eslint-plugin-react": "7.6.1",
     "rimraf": "2.6.1"
