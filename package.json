@@ -24,7 +24,7 @@
     "nanoid": "1.0.0",
     "range-parser": "1.2.0",
     "sanitize-filename": "1.6.1",
-    "superagent": "3.6.3"
+    "superagent": "5.0.2"
   },
   "devDependencies": {
     "babel-cli": "6.26.0",
